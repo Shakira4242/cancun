@@ -1,22 +1,41 @@
-import Mux from '@mux/mux-node';
-const { Video } = new Mux('7441578e-a733-4a1b-a32f-2b7ccc388c23', 'wUjBnDqjC/FnL0lyeAzZNujm4AcwT7gBXJtpcm/p6SgOT5cIUSmX8VNts62fA54DjJ3cUcaKsqV');
+import React, { Component } from "react";
 
-async function createVideo() {
-  const assets = await Video.Uploads.create({
-    input: 'https://storage.googleapis.com/muxdemofiles/mux-video-intro.mp4',
-    cors_origin: '*',
-  });
-  return assets;
+const inputs = {
+  "prompt": "Finish my sentence",
+  "max_characters": 512,
+};
+
+class App extends Component {
+  componentDidMount() {
+    // Replace this Hosted Model URL with your own
+    fetch("https://example-text-generator.hosted-models.stage.runwayml.cloud/v1/query", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer <token>", // Replace <token> with your Hosted Models's authorization token
+      },
+      body: JSON.stringify(inputs)
+    })
+    .then(response => response.json())
+    .then(outputs => {
+      const { generated_text, encountered_end } = outputs;
+      // use the outputs in your project
+      console.log(`The model responded to the prompt like so: ${generated_text}`)
+      if (encountered_end) {
+        console.log(`The model produced the end of text character, so it thinks its job is done`)
+      }
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        hello
+      </div>
+    );
+  }
 }
 
-
-function App(){
-  const something = createVideo();
-  return (
-    <div>
-      {console.log(something)}
-    </div>
-  )
-}
 
 export default App;
